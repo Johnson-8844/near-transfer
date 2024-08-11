@@ -9,10 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@near-wallet-selector/here-wallet": "^8.9.12",
+    "@near-wallet-selector/ledger": "^8.9.12",
+    "@near-wallet-selector/meteor-wallet": "^8.9.12",
+    "@near-wallet-selector/mintbase-wallet": "^8.9.12",
+    "@near-wallet-selector/modal-ui": "^8.9.12",
+    "@near-wallet-selector/my-near-wallet": "^8.9.12",
+    "@near-wallet-selector/near-mobile-wallet": "^8.9.12",
+    "@near-wallet-selector/neth": "^8.9.12",
+    "@near-wallet-selector/nightly": "^8.9.12",
+    "@near-wallet-selector/sender": "^8.9.12",
+    "@near-wallet-selector/welldone-wallet": "^8.9.12",
     "near-api-js": "^4.0.3",
+    "near-fastauth-wallet": "^2.0.1",
     "next": "^14.2.5",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "rxjs": "^7.8.1"
   },
   "devDependencies": {
     "@types/node": "^20",
