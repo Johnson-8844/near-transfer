@@ -9,11 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mintbase-js/react": "^0.6.1-beta.0",
+    "@mintbase-js/sdk": "^0.6.1-beta.0",
+    "@near-wallet-selector/bitte-wallet": "^8.9.12",
     "@near-wallet-selector/here-wallet": "^8.9.12",
     "@near-wallet-selector/ledger": "^8.9.12",
     "@near-wallet-selector/meteor-wallet": "^8.9.12",
     "@near-wallet-selector/mintbase-wallet": "^8.9.12",
     "@near-wallet-selector/modal-ui": "^8.9.12",
+    "@near-wallet-selector/modal-ui-js": "^8.9.12",
     "@near-wallet-selector/my-near-wallet": "^8.9.12",
     "@near-wallet-selector/near-mobile-wallet": "^8.9.12",
     "@near-wallet-selector/neth": "^8.9.12",

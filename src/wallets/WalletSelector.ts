@@ -13,6 +13,7 @@ import { setupNeth } from '@near-wallet-selector/neth';
 import { setupNightly } from '@near-wallet-selector/nightly';
 import { setupSender } from '@near-wallet-selector/sender';
 import { setupWelldoneWallet } from '@near-wallet-selector/welldone-wallet';
+import { setupBitteWallet } from '@near-wallet-selector/bitte-wallet';
 import { providers, utils } from 'near-api-js';
 import { setupFastAuthWallet } from 'near-fastauth-wallet';
 import type { Context } from 'react';
@@ -46,9 +47,10 @@ export class Wallet {
     this.selector = setupWalletSelector({
       network: this.networkId,
       modules: [
+        setupBitteWallet(),
         setupMyNearWallet(),
-        // setupSender(),
-        // setupHereWallet(),
+        setupSender(),
+        setupHereWallet(),
         setupMintbaseWallet(),
         // setupMeteorWallet(),
         // setupNeth({

@@ -13,6 +13,8 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
     setWallet(walletInstance);
   }, []);
 
+  console.log("Account >> ", signedAccountId)
+
   return (
     <NearContext.Provider value={{ wallet, signedAccountId }}>
       {children}

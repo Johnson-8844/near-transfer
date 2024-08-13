@@ -1,14 +1,24 @@
 "use client"
 import React, { useContext, useEffect, useState } from 'react';
 import { NearContext } from '@/wallets/WalletSelector';
+import * as nearAPI from "near-api-js";
 
 const WalletActions: React.FC = () => {
   const { wallet, signedAccountId } = useContext(NearContext);
   const [isTransferring, setIsTransferring] = useState(false);
 
+  // console.log("Wallet ", wallet)
+  console.log("signedAccountId ", signedAccountId)
+
   const handleSignIn = async () => {
     if (wallet) {
       await wallet.signIn();
+    }
+  };
+
+  const handleSignOut = async () => {
+    if (wallet) {
+      await wallet.signOut();
     }
   };
 
@@ -20,17 +30,15 @@ const WalletActions: React.FC = () => {
 
     try {
       setIsTransferring(true);
+      const amountInYocto = nearAPI.utils.format.parseNearAmount("0.05");
 
       const transaction = {
         receiverId: 'sweety08.testnet', 
         actions: [
           {
-            type: 'FunctionCall',
+            type: "Transfer",
             params: {
-              methodName: 'transfer',
-              args: {}, 
-              gas: '30000000000000', 
-              deposit: '1000000000000000000000000', 
+              deposit: amountInYocto,
             },
           },
         ],
@@ -56,20 +64,12 @@ const WalletActions: React.FC = () => {
       <button onClick={handleTransfer} disabled={!signedAccountId || isTransferring}>
         {isTransferring ? 'Transferring...' : 'Transfer 1 NEAR'}
       </button>
+      <button onClick={handleSignOut} disabled={!signedAccountId}>
+        {signedAccountId ? `Sign Out` : ''}
+      </button>
     </div>
   );
 };
 
 export default WalletActions;
 
-
-
-
-
-
-// const [balance, setBalance] = useState<any>(0);
-
-// useEffect(()=>{
-//   const res = wallet?.getBalance("sweety08.testnet");
-//   setBalance(res)
-// }, [])
