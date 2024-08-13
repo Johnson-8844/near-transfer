@@ -33,7 +33,7 @@ export class Wallet {
 
   constructor({
     networkId = "testnet",
-    createAccessKeyFor = "minsta.mintspace2.testnet",
+    createAccessKeyFor = "test.testnet",
   }: {
     networkId: NetworkId;
     createAccessKeyFor: string;
@@ -46,7 +46,7 @@ export class Wallet {
     this.selector = setupWalletSelector({
       network: this.networkId,
       modules: [
-        // setupMyNearWallet(),
+        setupMyNearWallet(),
         // setupSender(),
         // setupHereWallet(),
         setupMintbaseWallet(),

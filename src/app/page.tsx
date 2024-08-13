@@ -1,27 +1,148 @@
-"use client"
-import { connect, WalletConnection, keyStores, utils } from "near-api-js";
-import { useContext, useEffect, useState } from "react";
-// import { Wallet } from '@/wallets/near'
-import { NetworkId, HelloNearContract } from '@/config';
-import { Navigation } from "@/components/Navigation";
-import { initNear, sendNearTokens } from "@/service/blockChainService";
-import { NearContext, Wallet } from "@/wallets/WalletSelector";
-import { WalletProvider } from "@/providers/WalletProvider";
-import WalletActions from "@/components/WalletActions";
+// 'use client';  // This line ensures the component is rendered only on the client side
+// import { useEffect, useState } from "react";
+// import { setupWalletSelector } from "@near-wallet-selector/core";
+// import { setupModal } from "@near-wallet-selector/modal-ui";
+// import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+// import { setupSender } from "@near-wallet-selector/sender";
+// // import { setupNearFi } from "@near-wallet-selector/nearfi";
+// import { setupHereWallet } from "@near-wallet-selector/here-wallet";
+// // import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+// import { setupNightly } from "@near-wallet-selector/nightly";
+// import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+// import { setupLedger } from "@near-wallet-selector/ledger";
+// import { setupMintbaseWallet } from '@near-wallet-selector/mintbase-wallet';
+// // import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
+// import "@near-wallet-selector/modal-ui/styles.css";
+// import { WalletProvider } from "@/providers/WalletProvider";
+// import WalletActions from "@/components/WalletActions";
+// export default function Home() {
+//   return (
+//   <WalletProvider>
+//     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+//       <div>
+//         <h1>NEAR Wallet Example</h1>
+//         <WalletActions />
+//       </div>
+//     </main>
+//   </WalletProvider>
+// );
+// }
 
-// const wallet = new Wallet({ createAccessKeyFor: HelloNearContract, networkId: NetworkId });
+// =======================================================================
+// sathish method
 
-
+'use client';  // This line ensures the component is rendered only on the client side
+import { useEffect, useState } from "react";
+import { setupWalletSelector } from "@near-wallet-selector/core";
+import { setupModal } from "@near-wallet-selector/modal-ui";
+import { setupMyNearWallet } from "@near-wallet-selector/my-near-wallet";
+import { setupSender } from "@near-wallet-selector/sender";
+// import { setupNearFi } from "@near-wallet-selector/nearfi";
+import { setupHereWallet } from "@near-wallet-selector/here-wallet";
+// import { setupMathWallet } from "@near-wallet-selector/math-wallet";
+import { setupNightly } from "@near-wallet-selector/nightly";
+import { setupMeteorWallet } from "@near-wallet-selector/meteor-wallet";
+import { setupLedger } from "@near-wallet-selector/ledger";
+import { setupMintbaseWallet } from '@near-wallet-selector/mintbase-wallet';
+// import { setupCoin98Wallet } from "@near-wallet-selector/coin98-wallet";
+import "@near-wallet-selector/modal-ui/styles.css";
 export default function Home() {
-
+  const [selector, setSelector] = useState(null);
+  const [modal, setModal] = useState(null);
+  const [account, setAccount] = useState(null);  // State to hold the connected account
+  useEffect(() => {
+    const initializeWalletSelector = async () => {
+      try {
+        const selectorInstance = await setupWalletSelector({
+          network: "testnet",
+          modules: [
+            setupMintbaseWallet({
+              walletUrl:  'https://testnet.wallet.mintbase.xyz',
+              callbackUrl:  'https://minsta.org',
+              deprecated:  false,
+            }),
+            setupMyNearWallet(),
+            setupSender(),
+            setupHereWallet(),
+            setupNightly(),
+            setupMeteorWallet(),
+            setupLedger(),
+          ],
+        });
+        const modalInstance = setupModal(selectorInstance, {
+          contractId: "test.testnet",
+        });
+        setSelector(selectorInstance);
+        setModal(modalInstance);
+      } catch (error) {
+        console.error("Failed to initialize wallet selector:", error);
+      }
+    };
+    initializeWalletSelector();
+  }, []);
+  const handleSign = async () => {
+    if (!selector) {
+      console.error("Wallet selector is not initialized.");
+      return;
+    }
+    if (modal) {
+      try {
+        modal.show();
+        const wallet = await selector.wallet();
+        if (!wallet) {
+          console.error("No wallet found.");
+          return;
+        }
+        const response = await wallet.signIn({ contractId: "test.testnet" });
+        // Extract the accountId if the response is an object
+        console.log(response[0].accountId);
+        setAccount(response[0].accountId);
+         // Update the state with the connected account ID
+      } catch (error) {
+        console.error("Failed to sign in:", error);
+      }
+    } else {
+      console.error("Modal is not initialized.");
+    }
+  };
+  const handleSend = async () => {
+    const wallet = await selector.wallet();
+    if (!wallet) {
+      console.error("Wallet is not connected.");
+      return;
+    }
+    try {
+      const transaction = await wallet.signAndSendTransaction({
+        signerId: account,
+        receiverId: "rapid_zuckerberg.testnet",
+        actions: [
+          {
+            type: "Transfer",
+            params: {
+              deposit: "1000000000000000000000", // 1 NEAR
+            },
+          },
+        ],
+      });
+      console.log("Transaction sent:", transaction);
+    } catch (error) {
+      console.error("Failed to send transaction:", error);
+    }
+  };
   return (
-    
-      <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <div>
-          <h1>NEAR Wallet Example</h1>
-          <WalletActions />
+    <div>
+      <button onClick={handleSign} className="mt-10 ml-20 rounded-lg w-20 h-10 bg-white text-black">
+        Connect
+      </button>
+      {account && (
+        <div className="mt-4 ml-20">
+          <p className="text-white">Connected Account: {account}</p>
         </div>
-      </main>
+      )}
+     <button onClick={handleSend} className="mt-10 ml-20 rounded-lg w-20 h-10 bg-white text-black">
+       send
+      </button>
+    </div>
   );
 }
 
@@ -167,3 +288,18 @@ export default function Home() {
 //           <button id="transfer-button" onClick={handleTransfer}>Transfer 1 NEAR</button>
 //         </main>
 //     );
+
+
+// =================================================================================================
+// New Wallet Selector with action Transfer
+
+// return (
+//   <WalletProvider>
+//     <main className="flex min-h-screen flex-col items-center justify-between p-24">
+//       <div>
+//         <h1>NEAR Wallet Example</h1>
+//         <WalletActions />
+//       </div>
+//     </main>
+//   </WalletProvider>
+// );

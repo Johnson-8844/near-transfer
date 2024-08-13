@@ -8,7 +8,7 @@ export const WalletProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   const [signedAccountId, setSignedAccountId] = useState<string>('');
 
   useEffect(() => {
-    const walletInstance = new Wallet({ networkId, createAccessKeyFor: 'minsta.mintspace2.testnet' });
+    const walletInstance = new Wallet({ networkId, createAccessKeyFor: 'test.testnet' });
     walletInstance.startUp(setSignedAccountId);
     setWallet(walletInstance);
   }, []);

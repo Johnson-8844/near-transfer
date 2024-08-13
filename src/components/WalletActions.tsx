@@ -22,15 +22,15 @@ const WalletActions: React.FC = () => {
       setIsTransferring(true);
 
       const transaction = {
-        receiverId: 'sweety08.testnet', // replace with the actual receiver account ID
+        receiverId: 'sweety08.testnet', 
         actions: [
           {
             type: 'FunctionCall',
             params: {
               methodName: 'transfer',
-              args: {}, // no args needed for transfer
-              gas: '30000000000000', // 30 TGas
-              deposit: '1000000000000000000000000', // 1 NEAR in yoctoNEAR
+              args: {}, 
+              gas: '30000000000000', 
+              deposit: '1000000000000000000000000', 
             },
           },
         ],
