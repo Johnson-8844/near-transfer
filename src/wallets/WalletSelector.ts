@@ -19,6 +19,7 @@ import { setupFastAuthWallet } from 'near-fastauth-wallet';
 import type { Context } from 'react';
 import { createContext } from 'react';
 import { distinctUntilChanged, map } from 'rxjs';
+// import { setupMintbaseWallet } from  "@mintbase-js/wallet";
 
 import { networkId as defaultNetwork, signInContractId } from '@/utils/config';
 import { KEYPOM_OPTIONS } from '@/utils/keypom-options';

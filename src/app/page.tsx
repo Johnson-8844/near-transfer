@@ -1,5 +1,6 @@
 "use client"
 import WalletActions from "@/components/WalletActions";
+import '@near-wallet-selector/modal-ui/styles.css';
 
 
 export default function Home() {

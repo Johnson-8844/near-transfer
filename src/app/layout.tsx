@@ -12,10 +12,10 @@ export default function RootLayout({
 }>) {
 
   return (
-    <WalletProvider>
-      <html lang="en">
-        <body className={inter.className}>{children}</body>
-      </html>
-    </WalletProvider>
+      <WalletProvider>
+        <html lang="en">
+          <body className={inter.className}>{children}</body>
+        </html>
+      </WalletProvider>
   );
 }

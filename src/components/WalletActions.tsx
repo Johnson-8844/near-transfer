@@ -1,5 +1,5 @@
 "use client"
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { NearContext } from '@/wallets/WalletSelector';
 import * as nearAPI from "near-api-js";
 
