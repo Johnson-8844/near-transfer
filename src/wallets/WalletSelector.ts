@@ -1,4 +1,5 @@
-// import { setupKeypom } from '@keypom/selector';
+import { setupKeypom } from '@keypom/selector';
+import {createDrop, claim} from '@keypom/core';
 import type { FinalExecutionOutcome, WalletSelector, WalletSelectorState } from '@near-wallet-selector/core';
 import '@near-wallet-selector/modal-ui/styles.css';
 import { setupWalletSelector } from '@near-wallet-selector/core';
@@ -19,7 +20,6 @@ import { setupFastAuthWallet } from 'near-fastauth-wallet';
 import type { Context } from 'react';
 import { createContext } from 'react';
 import { distinctUntilChanged, map } from 'rxjs';
-// import { setupMintbaseWallet } from  "@mintbase-js/wallet";
 
 import { networkId as defaultNetwork, signInContractId } from '@/utils/config';
 import { KEYPOM_OPTIONS } from '@/utils/keypom-options';
@@ -49,10 +49,10 @@ export class Wallet {
       network: this.networkId,
       modules: [
         setupBitteWallet(),
+        setupMintbaseWallet({ contractId: this.createAccessKeyFor }),
         setupMyNearWallet(),
         setupSender(),
         setupHereWallet(),
-        setupMintbaseWallet(),
         // setupMeteorWallet(),
         // setupNeth({
         //   gas: '300000000000000',
@@ -85,7 +85,7 @@ export class Wallet {
         //         : 'https://dev.near.org/#instant-url/ACCOUNT_ID/SECRET_KEY/MODULE_ID',
         //   },
         //   networkId: this.networkId,
-        //   signInContractId,
+        //   signInContractId: this.createAccessKeyFor,
         // }) as any, // TODO: Refactor setupKeypom() to TS
         setupLedger(),
         // setupNearMobileWallet(),

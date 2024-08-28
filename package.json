@@ -9,8 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@mintbase-js/react": "^0.6.1-beta.0",
-    "@mintbase-js/sdk": "^0.6.1-beta.0",
+    "@keypom/selector": "^1.2.3",
     "@near-wallet-selector/bitte-wallet": "^8.9.12",
     "@near-wallet-selector/here-wallet": "^8.9.12",
     "@near-wallet-selector/ledger": "^8.9.12",
@@ -24,6 +23,7 @@
     "@near-wallet-selector/nightly": "^8.9.12",
     "@near-wallet-selector/sender": "^8.9.12",
     "@near-wallet-selector/welldone-wallet": "^8.9.12",
+    "ipfs-http-client": "^60.0.1",
     "near-api-js": "^4.0.3",
     "near-fastauth-wallet": "^2.0.1",
     "next": "^14.2.5",
