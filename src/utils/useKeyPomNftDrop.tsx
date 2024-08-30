@@ -2,8 +2,6 @@ import { useContext, useState } from 'react';
 import { utils } from 'near-api-js';
 import { KeyPair } from 'near-api-js/lib/utils';
 import { NearContext } from '@/wallets/WalletSelector';
-import { createDrop } from '@keypom/core';
-import { Account } from "@near-js/accounts";
 
 const useKeypomNFTDrop = () => {
     const [loading, setLoading] = useState(false);
@@ -19,7 +17,7 @@ const useKeypomNFTDrop = () => {
 
         try {
             const YOUR_ACCOUNT = signedAccountId;
-            const NFT_TOKEN_ID = "keypom-token-" + Date.now().toString();
+            const NFT_TOKEN_ID = "566";
             const NFT_CONTRACT = "minsta.mintspace2.testnet";
 
             await wallet.callMethod({
@@ -48,35 +46,35 @@ const useKeypomNFTDrop = () => {
         }
     };
 
-    const createDrop = async (pubKeys: any, nftSenderId: string) => {
+    const createDrop = async (pubKeys: any) => {
         if (!wallet) {
             throw new Error("Wallet is undefined");
         }
+
+        const KEYPOM_CONTRACT_ADDRESS = "v2.keypom.testnet";
+        const NFT_CONTRACT_ADDRESS = "minsta.mintspace2.testnet";
+        const DROP_AMOUNT = "10000000000000000000000";
         setLoading(true);
 
         try {
-            const KEYPOM_CONTRACT = "v2.keypom.testnet";
-            const NFT_CONTRACT = "minsta.mintspace2.testnet";
-
-            await wallet.callMethod({
-                contractId: KEYPOM_CONTRACT,
-                method: 'create_drop',
+            const res = await wallet.callMethod({
+                method: "create_drop",
+                contractId: KEYPOM_CONTRACT_ADDRESS,
                 args: {
-                    public_keys:  pubKeys,
-                    deposit_per_use: utils.format.parseNearAmount("1"),
+                    public_keys: pubKeys,
+                    deposit_per_use: DROP_AMOUNT,
                     nft: {
-                        sender_id: nftSenderId,
-                        contract_id: NFT_CONTRACT,
+                        // Who will be sending the NFTs to the Keypom contract
+                        sender_id: signedAccountId, // TODO How to get it
+                        // NFT Contract Id that the tokens will come from
+                        contract_id: NFT_CONTRACT_ADDRESS,
                     },
                 },
-                gas: '300000000000000',
-                deposit: utils.format.parseNearAmount("1")?.toString(),
+                deposit: "23000000000000000000000", // state.publicKeys.length * dropAmount + 3000000000000000000000,
+                gas: "100000000000000",
             });
-
-            // const dropId = await getRecentDropId(nftSenderId);
-            // console.log("Drop ID >>>> ", dropId)
-            // return dropId;
-            return;
+            console.log("Ress >> ", res)
+            return res;
         } catch (e: any) {
             setError(e.message || "An error occurred while creating the drop.");
             console.error("Error creating drop: ", e);
@@ -93,25 +91,24 @@ const useKeypomNFTDrop = () => {
         setLoading(true);
 
         try {
-            const NFT_CONTRACT = "minsta.mintspace2.testnet";
-            const KEYPOM_CONTRACT = "v2.keypom.testnet";
+            const KEYPOM_CONTRACT_ADDRESS = "v2.keypom.testnet";
+            const NFT_CONTRACT_ADDRESS = "minsta.mintspace2.testnet";
+            const NFT_TOKEN_ID = "556";
+            const DROP_AMOUNT = "10000000000000000000000";
 
-            await wallet.callMethod({
-                contractId: NFT_CONTRACT,
-                method: 'nft_transfer_call',
+            const res = await wallet.callMethod({
+                method: "nft_transfer_call",
+                contractId: NFT_CONTRACT_ADDRESS,
                 args: {
-                    receiver_id: KEYPOM_CONTRACT,
-                    token_id: nftTokenId,
-                    msg: dropId.toString(),
+                    receiver_id: KEYPOM_CONTRACT_ADDRESS,
+                    token_id: NFT_TOKEN_ID,
+                    token_owner: signedAccountId,
+                    msg: dropId.toString()
                 },
-                gas: '300000000000000',
-                deposit: utils.format.parseNearAmount("1")?.toString(),
+                deposit: "1",
+                gas: "100000000000000",
             });
-
-            // Generate linkdrop URL
-            const linkdropUrl = `https://testnet.mynearwallet.com/linkdrop/${KEYPOM_CONTRACT}/${dropId}`;
-            setDropLinks((prevLinks) => ({ ...prevLinks, [dropId]: linkdropUrl }));
-            return linkdropUrl;
+            return res;
         } catch (e: any) {
             setError(e.message || "An error occurred while transferring the NFT.");
             console.error("Error transferring NFT: ", e);
@@ -124,49 +121,19 @@ const useKeypomNFTDrop = () => {
     const getRecentDropId = async (accountId: string) => {
         try {
             const KEYPOM_CONTRACT = "v2.keypom.testnet";
-            // Fetch drop supply for the owner
-            console.log(`Fetching drop supply for account: ${accountId}`);
             const dropSupplyForOwner = await wallet?.viewMethod({
                 contractId: KEYPOM_CONTRACT,
                 method: 'get_next_drop_id',
                 args: { account_id: accountId },
             });
             return dropSupplyForOwner;
-    
-            // console.log(`Drop supply for ${accountId}:`, dropSupplyForOwner);
-    
-            // if (!dropSupplyForOwner || typeof dropSupplyForOwner !== 'number' || dropSupplyForOwner <= 0) {
-            //     throw new Error("Invalid drop supply returned from contract");
-            // }
-    
-            // // Fetch drops for the owner
-            // console.log(`Fetching drops for account: ${accountId} starting from index: ${dropSupplyForOwner - 1}`);
-            // const dropsForOwner = await wallet?.viewMethod({
-            //     contractId: KEYPOM_CONTRACT,
-            //     method: 'get_drops_for_owner',
-            //     args: {
-            //         account_id: accountId,
-            //         from_index: (dropSupplyForOwner - 1).toString(),
-            //     },
-            // });
-    
-            // console.log(`Drops for ${accountId}:`, dropsForOwner);
-    
-            // if (!dropsForOwner || dropsForOwner.length === 0) {
-            //     throw new Error("No drops found for the owner");
-            // }
-    
-            // // Return the most recent drop ID
-            // return dropsForOwner[dropsForOwner.length - 1].drop_id;
         } catch (e: any) {
             console.error("Error fetching recent drop ID: ", e);
             throw e;
         }
     };
-    
-    
 
-    return { mintNFT, createDrop, transferNFTToKeypom, getRecentDropId, dropLinks, loading, error };
+    return { mintNFT, createDrop, transferNFTToKeypom, getRecentDropId, loading, error };
 };
 
 export default useKeypomNFTDrop;

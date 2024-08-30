@@ -35,7 +35,7 @@ export class Wallet {
 
   constructor({
     networkId = "testnet",
-    createAccessKeyFor = "test.testnet",
+    createAccessKeyFor = "minsta.mintspace2.testnet",
   }: {
     networkId: NetworkId;
     createAccessKeyFor: string;
